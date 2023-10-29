@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apuestas</title>
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#">Navbar</a>
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a
+                  class="nav-link active"
+                  aria-current="page"
+                  href="web01paginaPrincipal.html"
+                  >Home</a
+                >
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="web05apuestas.html">Apuestas</a>
+              </li>
+              <li class="nav-item dropdown">
+                <a
+                  class="nav-link dropdown-toggle"
+                  href="#"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  Equipos
+                </a>
+                <ul class="dropdown-menu" id="liEquipos"></ul>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/*">Not Found</NavLink>
+              </li>
+            </ul>
+          </div>
+        </div>
+    </nav>
+    <div id="botonCrear"></div>
+    <table className='table table-hover' id="tablaInfo">
+        <thead>
+            <tr>
+                <th>Usuario</th>
+                <th>Resultado</th>
+                <th>Fecha</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <script src="./js/jquery-3.7.1.min.js"></script>
+    <script src="../js/bootstrap.bundle.min.js"></script>
+    <script>
+        var urlEquipos = "https://apiapuestas.azurewebsites.net/";
+        $(document).ready(function(){
+            loadEquipos();
+            loadApuestas();
+        })
+
+        function loadEquipos(){
+            var request = "api/Equipos"
+            $.getJSON(urlEquipos + request, function(data){
+                var html="";
+                $.each(data, function(index, equipo){
+                    html += "<li>";
+                    html += "<a class='dropdown-item' href='web02detallesEquipo.html?idEquipo=" + equipo.idEquipo + "'>" + equipo.nombre + "</a>"
+                    html += "</li>";      
+                })
+                $("#liEquipos").html(html);
+            })
+        }
+
+        function loadApuestas(){
+            $.ajax({
+                "url": urlEquipos + "api/Apuestas",
+                "method": "GET",
+                "dataType": "json",
+                success: function(data){
+                    var boton = "<a  class='btn btn-danger'href='web06crearApuesta.html'>Crear Apuesta</a>"
+                    var html= "";
+                    $.each(data, function(index, apuesta){
+                        html += "<tr>";
+                        html += "<td>" + apuesta.usuario + "</td>";
+                        html += "<td>" + apuesta.resultado + "</td>";
+                        html += "<td>" + apuesta.fecha + "</td>";
+                        html += "</tr>";
+                    })
+                    $("#tablaInfo tbody").html(html);
+                    $("#botonCrear").html(boton)
+                }
+            })
+        }
+    </script>
+</body>
+</html>
